@@ -1,10 +1,12 @@
-import { Button } from "@/components/ui/button"
+import React from 'react'
+import Header from './components/custom/Header.jsx'
+import Hero from './components/custom/Hero.jsx'
 
 function App() {
   return (
     <>
-    <h2>Hello welcome to my project</h2>
-    <Button>Subcribe</Button>
+       {/* Hero */}
+      <Hero/>
     </>
   )
 }
