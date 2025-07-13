@@ -1,109 +1,135 @@
 import React, { useState } from 'react';
-import LocationSearch from '../components/custom/LocationSearch';
-import { Input } from '../components/ui/input';
-import { Button } from '../components/ui/button';
-import { SelectBudgetOptions, SelectTravelersList } from '@/constants/options';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { SelectBudgetOptions, SelectTravelersList, AI_PROMPT } from '@/constants/options';
+import LocationSearch from '@/components/custom/LocationSearch';
+import { Toaster, toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
 
 function CreateTrip() {
+  const navigate = useNavigate();
+  const [place, setPlace] = useState(null);
   const [formData, setFormData] = useState({
     location: '',
-    days: '',
+    noOfDays: '',
     budget: '',
-    travelers: '',
+    noOfPeople: '',
   });
 
-  const handleInputChange = (name, value) => {
-    setFormData(prev => ({ ...prev, [name]: value }));
-    console.log(`📝 ${name}:`, value);
+  const handleLocationSelect = (selectedPlace) => {
+    setPlace(selectedPlace);
+    setFormData({ ...formData, location: selectedPlace });
   };
-  if (name=='days'&&value>10){
-    console.log(Trip days should be less than 10);
-    
+
+  const handleInputChange = (name, value) => {
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const onGenerateTrip = async () => {
+  // Step 1: Basic field validation
+  if (
+    !formData?.noOfDays ||
+    !formData?.location ||
+    !formData?.budget ||
+    !formData?.noOfPeople
+  ) {
+    toast.error("Please enter all the details");
+    return;
   }
+
+  // Step 2: Max 7 days constraint
+  if (formData?.noOfDays > 7) {
+    toast.error("Please enter no. of days less than 8");
+    return;
+  }
+
+  // Step 3: Success feedback (placeholder for future logic)
+  toast.success("Trip data looks good ✅");
+
+  // TODO: Later we'll add chatSession + Save logic here
+};
+
   return (
-    <div className="flex items-center justify-center min-h-screen px-4">
-      <div className="w-full sm:px-10 md:px-32 lg:px-56 xl:px-72">
-        <h2 className="text-3xl font-bold text-center">Tell us your travel preferences 🏕️🌴</h2>
-        <p className="mt-3 text-xl text-center text-gray-500">
-          Just provide some basic information, and our trip planner will generate a customized itinerary based on your preferences.
-        </p>
+    <>
+      <Toaster position="top-right" richColors />
+      <div className="flex items-center justify-center min-h-screen px-4">
+        <div className="w-full sm:px-10 md:px-32 lg:px-56 xl:px-72">
+          <h2 className="text-3xl font-bold text-center">Tell us your travel preferences 🏕️🌴</h2>
+          <p className="mt-3 text-xl text-center text-gray-500">
+            Just provide some basic information, and our trip planner will generate a customized itinerary based on your preferences.
+          </p>
 
-        <div className="flex flex-col gap-10 mt-20">
-          {/* Location Input */}
-          <div>
-            <h2 className="my-3 text-xl font-medium">What is your destination of choice?</h2>
-            <LocationSearch
-              onSelect={(place) => {
-                handleInputChange('location', place.display_name);
-              }}
-            />
-            {formData.location && (
-              <p className="mt-4 font-medium text-green-600">
-                ✅ Selected: {formData.location}
-              </p>
-            )}
-          </div>
-
-          {/* Trip Duration */}
-          <div>
-            <h2 className="my-3 text-xl font-medium">How many days are you planning your trip?</h2>
-            <Input
-              placeholder="Ex. 3"
-              type="number"
-              value={formData.days}
-              onChange={(e) => handleInputChange('days', e.target.value)}
-            />
-          </div>
-
-          {/* Budget Selection */}
-          <div>
-            <h2 className="my-3 text-xl font-medium">What is Your Budget?</h2>
-            <div className="grid grid-cols-3 gap-5 mt-5">
-              {SelectBudgetOptions.map((item) => (
-                <div
-                  key={item.id}
-                  className={`p-4 text-center border rounded-lg cursor-pointer hover:shadow-lg ${
-                    formData.budget === item.title ? 'border-black shadow-md' : ''
-                  }`}
-                  onClick={() => handleInputChange('budget', item.title)}
-                >
-                  <h2 className="text-4xl">{item.icon}</h2>
-                  <h2 className="text-lg font-bold">{item.title}</h2>
-                  <h2 className="text-sm text-gray-500">{item.desc}</h2>
-                </div>
-              ))}
+          <div className="flex flex-col gap-10 mt-20">
+            {/* Location */}
+            <div>
+              <h2 className="my-3 text-xl font-medium">What is your destination of choice?</h2>
+              <LocationSearch onSelect={handleLocationSelect} />
+              {place && (
+                <p className="mt-4 font-medium text-green-600">
+                  ✅ Selected: {place.display_name}
+                </p>
+              )}
             </div>
-          </div>
 
-          {/* Traveler Selection */}
-          <div>
-            <h2 className="my-3 text-xl font-medium">Who do you plan on traveling with on your next adventure?</h2>
-            <div className="grid grid-cols-3 gap-5 mt-5">
-              {SelectTravelersList.map((item, index) => (
-                <div
-                  key={index}
-                  className={`p-4 text-center border rounded-lg cursor-pointer hover:shadow-lg ${
-                    formData.travelers === item.title ? 'border-black shadow-md' : ''
-                  }`}
-                  onClick={() => handleInputChange('travelers', item.title)}
-                >
-                  <h2 className="text-4xl">{item.icon}</h2>
-                  <h2 className="text-lg font-bold">{item.title}</h2>
-                  <h2 className="text-sm text-gray-500">{item.desc}</h2>
-                </div>
-              ))}
+            {/* Days */}
+            <div>
+              <h2 className="my-3 text-xl font-medium">How many days are you planning your trip?</h2>
+              <Input
+                placeholder="Ex. 3"
+                type="number"
+                value={formData.noOfDays}
+                onChange={(e) => handleInputChange("noOfDays", e.target.value)}
+              />
             </div>
-          </div>
 
-          {/* Generate Trip Button */}
-          <div className="flex justify-end my-10">
-            <Button onClick={() => console.log('🧠 Final Form Data:', formData)}>
-              Generate Trip
-            </Button>
+            {/* Budget */}
+            <div>
+              <h2 className="my-3 text-xl font-medium">What is Your Budget?</h2>
+              <div className="grid grid-cols-3 gap-5 mt-5">
+                {SelectBudgetOptions.map((item, index) => (
+                  <div
+                    key={index}
+                    className={`p-4 text-center border rounded-lg cursor-pointer hover:shadow-lg ${
+                      formData.budget === item.title ? 'border-blue-500 shadow-md' : ''
+                    }`}
+                    onClick={() => handleInputChange('budget', item.title)}
+                  >
+                    <h2 className="text-4xl">{item.icon}</h2>
+                    <h2 className="text-lg font-bold">{item.title}</h2>
+                    <h2 className="text-sm text-gray-500">{item.desc}</h2>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* People */}
+            <div>
+              <h2 className="my-3 text-xl font-medium">Who do you plan on traveling with?</h2>
+              <div className="grid grid-cols-3 gap-5 mt-5">
+                {SelectTravelersList.map((item, index) => (
+                  <div
+                    key={index}
+                    className={`p-4 text-center border rounded-lg cursor-pointer hover:shadow-lg ${
+                      formData.noOfPeople === item.title ? 'border-blue-500 shadow-md' : ''
+                    }`}
+                    onClick={() => handleInputChange('noOfPeople', item.title)}
+                  >
+                    <h2 className="text-4xl">{item.icon}</h2>
+                    <h2 className="text-lg font-bold">{item.title}</h2>
+                    <h2 className="text-sm text-gray-500">{item.desc}</h2>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Button */}
+            <div className="flex justify-end my-10">
+              <Button onClick={onGenerateTrip}>Generate Trip</Button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

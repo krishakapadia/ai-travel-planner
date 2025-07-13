@@ -1,32 +1,12 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.jsx'
-import CreateTrip from './create-trip/index.jsx'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import Layout from './Layout.jsx';
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App.jsx';
+import './index.css';
+import { Toaster } from 'sonner';
 
-
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <Layout />,
-    children: [
-      {
-        path: '',
-        element: <App />
-      },
-      {
-        path: 'create-trip',
-        element: <CreateTrip />
-      }
-    ]
-  }
-]);
-
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
-  
-    <RouterProvider router={router} />
-  </StrictMode>
-)
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <App />
+    <Toaster position="top-right" richColors />
+  </React.StrictMode>
+);
