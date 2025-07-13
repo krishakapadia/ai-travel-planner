@@ -37,7 +37,7 @@ const LocationSearch = ({ onSelect }) => {
   }, [inputValue]);
 
   const handleChange = (selectedOption) => {
-    onSelect(selectedOption.value); // entire place object
+    onSelect(selectedOption.value); 
   };
 
   return (

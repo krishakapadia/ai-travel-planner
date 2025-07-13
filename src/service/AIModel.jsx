@@ -1,11 +1,10 @@
-// src/service/AIModel.js
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const apiKey = import.meta.env.VITE_GOOGLE_GEMINI_AI_API_KEY; // Keep your key in .env
+const apiKey = import.meta.env.VITE_GOOGLE_GEMINI_AI_API_KEY; 
 const genAI = new GoogleGenerativeAI(apiKey);
 
 const model = genAI.getGenerativeModel({
-  model: "gemini-1.5-flash", // You can also use "gemini-pro"
+  model: "gemini-1.5-flash", 
 });
 
 const generationConfig = {

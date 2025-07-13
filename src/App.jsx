@@ -3,7 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 
 import Header from './components/custom/Header.jsx';
 import Hero from './components/custom/Hero.jsx';
-import CreateTrip from './create-trip'; // or './create-trip/index.jsx'
+import CreateTrip from './create-trip/index.jsx'; 
 
 function App() {
   return (

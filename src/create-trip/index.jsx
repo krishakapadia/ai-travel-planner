@@ -5,8 +5,7 @@ import { SelectBudgetOptions, SelectTravelersList } from '@/constants/options';
 import LocationSearch from '@/components/custom/LocationSearch';
 import { Toaster, toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
-import { generateGeminiResponse } from '../service/AIModel.jsx'; // Updated path
-
+import { generateGeminiResponse } from '../service/AIModel.jsx'; 
 
 function CreateTrip() {
   const navigate = useNavigate();
