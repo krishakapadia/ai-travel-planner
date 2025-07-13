@@ -10,3 +10,44 @@ Currently, two official plugins are available:
 ## Expanding the ESLint configuration
 
 If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+
+```
+ai-travel-planner
+├─ .shadcn.json
+├─ components.json
+├─ eslint.config.js
+├─ index.html
+├─ jsconfig.json
+├─ package-lock.json
+├─ package.json
+├─ postcss.config.cjs
+├─ public
+│  ├─ logo.svg
+│  └─ vite.svg
+├─ README.md
+├─ src
+│  ├─ App.css
+│  ├─ App.jsx
+│  ├─ assets
+│  │  └─ react.svg
+│  ├─ components
+│  │  ├─ custom
+│  │  │  ├─ Header.jsx
+│  │  │  ├─ Hero.jsx
+│  │  │  └─ LocationSearch.jsx
+│  │  └─ ui
+│  │     ├─ button.jsx
+│  │     └─ input.jsx
+│  ├─ constants
+│  │  └─ options.jsx
+│  ├─ create-trip
+│  │  └─ index.jsx
+│  ├─ index.css
+│  ├─ Layout.jsx
+│  ├─ lib
+│  │  └─ utils.js
+│  └─ main.jsx
+├─ tailwind.config.js
+└─ vite.config.js
+
+```
