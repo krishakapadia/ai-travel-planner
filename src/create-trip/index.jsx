@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { SelectBudgetOptions, SelectTravelersList, AI_PROMPT } from '@/constants/options';
+import { SelectBudgetOptions, SelectTravelersList } from '@/constants/options';
 import LocationSearch from '@/components/custom/LocationSearch';
 import { Toaster, toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
+import { generateGeminiResponse } from '../service/AIModel.jsx'; // Updated path
+
 
 function CreateTrip() {
   const navigate = useNavigate();
@@ -26,28 +28,48 @@ function CreateTrip() {
   };
 
   const onGenerateTrip = async () => {
-  // Step 1: Basic field validation
-  if (
-    !formData?.noOfDays ||
-    !formData?.location ||
-    !formData?.budget ||
-    !formData?.noOfPeople
-  ) {
-    toast.error("Please enter all the details");
-    return;
-  }
+    console.log("Form Data:", {
+      ...formData,
+      location: formData.location?.display_name || formData.location?.label || "N/A"
+    });
+    
+    if (
+      !formData?.noOfDays ||
+      !formData?.location ||
+      !formData?.budget ||
+      !formData?.noOfPeople
+    ) {
+      toast.error("Please enter all the details");
+      return;
+    }
 
-  // Step 2: Max 7 days constraint
-  if (formData?.noOfDays > 7) {
-    toast.error("Please enter no. of days less than 8");
-    return;
-  }
+    if (formData?.noOfDays > 7) {
+      toast.error("Please enter no. of days less than 8");
+      return;
+    }
 
-  // Step 3: Success feedback (placeholder for future logic)
-  toast.success("Trip data looks good ✅");
+    toast.info("Generating your trip plan...");
 
-  // TODO: Later we'll add chatSession + Save logic here
-};
+    const prompt = `Generate Travel Plan for Location: ${
+      formData.location?.display_name || formData.location?.label
+    }, for ${formData.noOfDays} Days for ${formData.noOfPeople} with a ${formData.budget} budget. 
+Give me a Hotels options list with HotelName, Hotel address, Price, hotel image url, geo coordinates, rating, descriptions and suggest itinerary with placeName, Place Details, Place Image Url, Geo Coordinates, ticket Pricing, Time to travel each of the location for ${formData.noOfDays} days with each day plan with best time to visit in JSON format.`;
+
+    try {
+      const result = await generateGeminiResponse(prompt);
+      console.log("Prompt to Gemini:", prompt);
+      if (result) {
+        console.log("Your Generated Trip:", result);
+        toast.success("Trip plan generated successfully!");
+        // TODO: Navigate or display result
+      } else {
+        toast.error("No response received from Gemini");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("Something went wrong while generating the trip");
+    }
+  };
 
   return (
     <>
@@ -75,6 +97,8 @@ function CreateTrip() {
             <div>
               <h2 className="my-3 text-xl font-medium">How many days are you planning your trip?</h2>
               <Input
+                id="noOfDays"
+                name="noOfDays"
                 placeholder="Ex. 3"
                 type="number"
                 value={formData.noOfDays}
@@ -84,7 +108,7 @@ function CreateTrip() {
 
             {/* Budget */}
             <div>
-              <h2 className="my-3 text-xl font-medium">What is Your Budget?</h2>
+              <h2 className="my-3 text-xl font-medium">What is your budget?</h2>
               <div className="grid grid-cols-3 gap-5 mt-5">
                 {SelectBudgetOptions.map((item, index) => (
                   <div
@@ -102,7 +126,7 @@ function CreateTrip() {
               </div>
             </div>
 
-            {/* People */}
+            {/* Travelers */}
             <div>
               <h2 className="my-3 text-xl font-medium">Who do you plan on traveling with?</h2>
               <div className="grid grid-cols-3 gap-5 mt-5">
